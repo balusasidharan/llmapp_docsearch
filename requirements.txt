@@ -6,4 +6,5 @@ langchain-text-splitters
 sqlalchemy
 pgvector
 sentence-transformers
-ollama-client 
+uvicorn
+psycopg[binary]
