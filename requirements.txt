@@ -1,0 +1,9 @@
+fastapi
+pydantic
+langchain
+langchain-community
+langchain-text-splitters
+sqlalchemy
+pgvector
+sentence-transformers
+ollama-client 
