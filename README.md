@@ -36,7 +36,7 @@ pip install -r requirements.txt
   ```
 - Set the connection string as an environment variable:
   ```sh
-  export PGVECTOR_CONNECTION_STRING="postgresql://<user>:<password>@localhost:5432/docsearch"
+  export  PGVECTOR_CONNECTION_STRING="postgresql+psycopg://<<replace with postgres username>>:<<password>>@localhost:5432/docsearch" 
   ```
 
 ### 5. Prepare Ollama and Model
@@ -50,15 +50,22 @@ pip install -r requirements.txt
 - Place your documents (PDFs, text files) in a folder (e.g., `vectordocs/`).
 - Run the indexer script to populate the database:
   ```sh
-  python postgres_indexer.py
+  python postgres_indexer2.py
   ```
-
-### 7. Start the FastAPI Application
+  This will create a database called 
+### 7. Additional Step 
+- When you run the indexer you will probably face some errors with certain column names. So run the below SQL statements using the pgAdmin console or PSQL console
+  ```
+  ALTER TABLE langchain_pg_embedding
+  ALTER COLUMN id SET DEFAULT gen_random_uuid();
+  ALTER TABLE langchain_pg_embedding ADD COLUMN uuid TEXT;
+  ALTER TABLE langchain_pg_embedding ADD COLUMN custom_id TEXT;
+### 8. Start the FastAPI Application
 ```sh
 uvicorn app:app --reload
 ```
 
-### 8. Query the API
+### 9. Query the API
 Send a POST request to `/search/`:
 ```sh
 curl -X POST http://localhost:8000/search/ \
@@ -73,5 +80,10 @@ curl -X POST http://localhost:8000/search/ \
 
 ## Troubleshooting
 - If you see errors about missing columns, ensure your database schema matches the latest code.
-- If you see errors about missing Python packages, re-run `pip install -r requirements.txt`.
+- If you see errors about missing Python packages, re-run `pip install -r requirements.txt`. or install specific packages using
+  for eg : in my case I had install psycopg library it can be done using
+  ```
+   (venv) ➜  docsearch git:(main) venv/bin/pip install "psycopg[binary]"
+
+   ```
 - For Ollama issues, ensure the Ollama server is running and the model is pulled. 
